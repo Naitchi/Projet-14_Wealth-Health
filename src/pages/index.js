@@ -379,7 +379,7 @@ export default function Home() {
               <ClientOnly>
                 <Select
                   name="states"
-                  id="states"
+                  inputId="states"
                   options={states.map((s) => ({ value: s.abbreviation, label: s.name }))}
                   onChange={(option) => handleSelectChange('states', option)}
                 />
@@ -404,7 +404,7 @@ export default function Home() {
             <ClientOnly>
               <Select
                 name="department"
-                id="department"
+                inputId="department"
                 options={[
                   { value: 'Sales', label: 'Sales' },
                   { value: 'Marketing', label: 'Marketing' },
