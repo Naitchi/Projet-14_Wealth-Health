@@ -163,7 +163,10 @@ export default function EmployeesArray() {
           <select
             className={styles.show}
             onChange={(event) => {
-              setState({ ...state, params: { ...state.params, show: event.target.value } });
+              setState({
+                ...state,
+                params: { ...state.params, show: event.target.value, page: 0 },
+              });
             }}
           >
             <option>10</option>
