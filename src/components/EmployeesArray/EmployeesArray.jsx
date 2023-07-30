@@ -3,6 +3,17 @@ import styles from './EmployeesArray.module.css';
 
 export default function EmployeesArray() {
   const [state, setState] = useState({
+    columns: [
+      'firstName',
+      'lastName',
+      'startDate',
+      'department',
+      'dateOfBirth',
+      'street',
+      'city',
+      'states',
+      'zipCode',
+    ],
     employees: [],
     params: {
       show: 10, //number between 10 25 50 100
@@ -293,33 +304,14 @@ export default function EmployeesArray() {
           ) : (
             sortedEmployeesOfThisPage.map((employee, key) => (
               <tr key={key} className={`${key % 2 === 0 ? styles.greyRow : ''}`}>
-                <td className={state.params.sortBy === 'firstName' ? styles.activeColumn : ''}>
-                  {employee.firstName}
-                </td>
-                <td className={state.params.sortBy === 'lastName' ? styles.activeColumn : ''}>
-                  {employee.lastName}
-                </td>
-                <td className={state.params.sortBy === 'startDate' ? styles.activeColumn : ''}>
-                  {employee.startDate}
-                </td>
-                <td className={state.params.sortBy === 'department' ? styles.activeColumn : ''}>
-                  {employee.department}
-                </td>
-                <td className={state.params.sortBy === 'dateOfBirth' ? styles.activeColumn : ''}>
-                  {employee.dateOfBirth}
-                </td>
-                <td className={state.params.sortBy === 'street' ? styles.activeColumn : ''}>
-                  {employee.street}
-                </td>
-                <td className={state.params.sortBy === 'city' ? styles.activeColumn : ''}>
-                  {employee.city}
-                </td>
-                <td className={state.params.sortBy === 'states' ? styles.activeColumn : ''}>
-                  {employee.states}
-                </td>
-                <td className={state.params.sortBy === 'zipCode' ? styles.activeColumn : ''}>
-                  {employee.zipCode}
-                </td>
+                {state.columns.map((column) => (
+                  <td
+                    key={column}
+                    className={state.params.sortBy === column ? styles.activeColumn : ''}
+                  >
+                    {employee[column]}
+                  </td>
+                ))}
               </tr>
             ))
           )}
