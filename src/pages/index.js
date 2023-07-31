@@ -1,292 +1,59 @@
 import Head from 'next/head';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import ClientOnly from '../components/ClientOnly/ClientOnly';
 
 import styles from '../styles/Home.module.css';
-
-const states = [
-  {
-    name: 'Alabama',
-    abbreviation: 'AL',
-  },
-  {
-    name: 'Alaska',
-    abbreviation: 'AK',
-  },
-  {
-    name: 'American Samoa',
-    abbreviation: 'AS',
-  },
-  {
-    name: 'Arizona',
-    abbreviation: 'AZ',
-  },
-  {
-    name: 'Arkansas',
-    abbreviation: 'AR',
-  },
-  {
-    name: 'California',
-    abbreviation: 'CA',
-  },
-  {
-    name: 'Colorado',
-    abbreviation: 'CO',
-  },
-  {
-    name: 'Connecticut',
-    abbreviation: 'CT',
-  },
-  {
-    name: 'Delaware',
-    abbreviation: 'DE',
-  },
-  {
-    name: 'District Of Columbia',
-    abbreviation: 'DC',
-  },
-  {
-    name: 'Federated States Of Micronesia',
-    abbreviation: 'FM',
-  },
-  {
-    name: 'Florida',
-    abbreviation: 'FL',
-  },
-  {
-    name: 'Georgia',
-    abbreviation: 'GA',
-  },
-  {
-    name: 'Guam',
-    abbreviation: 'GU',
-  },
-  {
-    name: 'Hawaii',
-    abbreviation: 'HI',
-  },
-  {
-    name: 'Idaho',
-    abbreviation: 'ID',
-  },
-  {
-    name: 'Illinois',
-    abbreviation: 'IL',
-  },
-  {
-    name: 'Indiana',
-    abbreviation: 'IN',
-  },
-  {
-    name: 'Iowa',
-    abbreviation: 'IA',
-  },
-  {
-    name: 'Kansas',
-    abbreviation: 'KS',
-  },
-  {
-    name: 'Kentucky',
-    abbreviation: 'KY',
-  },
-  {
-    name: 'Louisiana',
-    abbreviation: 'LA',
-  },
-  {
-    name: 'Maine',
-    abbreviation: 'ME',
-  },
-  {
-    name: 'Marshall Islands',
-    abbreviation: 'MH',
-  },
-  {
-    name: 'Maryland',
-    abbreviation: 'MD',
-  },
-  {
-    name: 'Massachusetts',
-    abbreviation: 'MA',
-  },
-  {
-    name: 'Michigan',
-    abbreviation: 'MI',
-  },
-  {
-    name: 'Minnesota',
-    abbreviation: 'MN',
-  },
-  {
-    name: 'Mississippi',
-    abbreviation: 'MS',
-  },
-  {
-    name: 'Missouri',
-    abbreviation: 'MO',
-  },
-  {
-    name: 'Montana',
-    abbreviation: 'MT',
-  },
-  {
-    name: 'Nebraska',
-    abbreviation: 'NE',
-  },
-  {
-    name: 'Nevada',
-    abbreviation: 'NV',
-  },
-  {
-    name: 'New Hampshire',
-    abbreviation: 'NH',
-  },
-  {
-    name: 'New Jersey',
-    abbreviation: 'NJ',
-  },
-  {
-    name: 'New Mexico',
-    abbreviation: 'NM',
-  },
-  {
-    name: 'New York',
-    abbreviation: 'NY',
-  },
-  {
-    name: 'North Carolina',
-    abbreviation: 'NC',
-  },
-  {
-    name: 'North Dakota',
-    abbreviation: 'ND',
-  },
-  {
-    name: 'Northern Mariana Islands',
-    abbreviation: 'MP',
-  },
-  {
-    name: 'Ohio',
-    abbreviation: 'OH',
-  },
-  {
-    name: 'Oklahoma',
-    abbreviation: 'OK',
-  },
-  {
-    name: 'Oregon',
-    abbreviation: 'OR',
-  },
-  {
-    name: 'Palau',
-    abbreviation: 'PW',
-  },
-  {
-    name: 'Pennsylvania',
-    abbreviation: 'PA',
-  },
-  {
-    name: 'Puerto Rico',
-    abbreviation: 'PR',
-  },
-  {
-    name: 'Rhode Island',
-    abbreviation: 'RI',
-  },
-  {
-    name: 'South Carolina',
-    abbreviation: 'SC',
-  },
-  {
-    name: 'South Dakota',
-    abbreviation: 'SD',
-  },
-  {
-    name: 'Tennessee',
-    abbreviation: 'TN',
-  },
-  {
-    name: 'Texas',
-    abbreviation: 'TX',
-  },
-  {
-    name: 'Utah',
-    abbreviation: 'UT',
-  },
-  {
-    name: 'Vermont',
-    abbreviation: 'VT',
-  },
-  {
-    name: 'Virgin Islands',
-    abbreviation: 'VI',
-  },
-  {
-    name: 'Virginia',
-    abbreviation: 'VA',
-  },
-  {
-    name: 'Washington',
-    abbreviation: 'WA',
-  },
-  {
-    name: 'West Virginia',
-    abbreviation: 'WV',
-  },
-  {
-    name: 'Wisconsin',
-    abbreviation: 'WI',
-  },
-  {
-    name: 'Wyoming',
-    abbreviation: 'WY',
-  },
-];
+import states from '../data/states';
 
 export default function Home() {
-  const [state, setState] = useState({
-    modal: false,
-    employee: {
-      firstName: '',
-      lastName: '',
-      dateOfBirth: '',
-      startDate: '',
-      department: 'Sales', // c'est un select il faut une valeur par default
-      street: '',
-      city: '',
-      states: 'AL', // c'est un select il faut une valeur par default
-      zipCode: '',
-    },
+  const [employee, setEmployee] = useState({
+    firstName: '',
+    lastName: '',
+    dateOfBirth: '',
+    startDate: '',
+    department: 'Sales', // c'est un select il faut une valeur par default
+    street: '',
+    city: '',
+    states: 'AL', // c'est un select il faut une valeur par default
+    zipCode: '',
   });
+  const [modal, setModal] = useState(false);
+
+  const stateOptions = useMemo(
+    () => states.map((s) => ({ value: s.abbreviation, label: s.name })),
+    [],
+  );
+
+  const departmentOptions = useMemo(
+    () => [
+      { value: 'Sales', label: 'Sales' },
+      { value: 'Marketing', label: 'Marketing' },
+      { value: 'Engineering', label: 'Engineering' },
+      { value: 'Human Resources', label: 'Human Resources' },
+      { value: 'Legal', label: 'Legal' },
+    ],
+    [],
+  );
 
   const save = () => {
     if (typeof window !== 'undefined') {
       const employees = JSON.parse(localStorage.getItem('employees')) || [];
-      employees.push(state.employee);
+      employees.push(employee);
       localStorage.setItem('employees', JSON.stringify(employees));
-      setState({ ...state, modal: true });
+      setModal(true);
     }
   };
 
-  const handleDateChange = (field, date) => {
-    setState({
-      ...state,
-      employee: { ...state.employee, [field]: date },
-    });
-  };
-
-  const handleSelectChange = (field, option) => {
-    setState({
-      ...state,
-      employee: { ...state.employee, [field]: option.value },
-    });
+  const handleInputChange = (field, value) => {
+    setEmployee((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
-    <>
+    <React.Fragment>
       <Head>
         <title>HRnet</title>
         <meta name="description" content="Generated by create next app" />
@@ -298,7 +65,7 @@ export default function Home() {
           <h1>HRnet</h1>
         </div>
         <div className={styles.container}>
-          <a href="employees">View Current Employees</a>
+          <Link href="employees">View Current Employees</Link>
           <h2>Create Employee</h2>
           <form action="#" id="create-employee">
             <label className={styles.label} htmlFor="first-name">
@@ -307,12 +74,7 @@ export default function Home() {
             <input
               type="text"
               id="first-name"
-              onChange={(event) =>
-                setState({
-                  ...state,
-                  employee: { ...state.employee, firstName: event.target.value },
-                })
-              }
+              onChange={(event) => handleInputChange('firstName', event.target.value)}
             />
             <label className={styles.label} htmlFor="last-name">
               Last Name
@@ -320,12 +82,7 @@ export default function Home() {
             <input
               type="text"
               id="last-name"
-              onChange={(event) =>
-                setState({
-                  ...state,
-                  employee: { ...state.employee, lastName: event.target.value },
-                })
-              }
+              onChange={(event) => handleInputChange('lastName', event.target.value)}
             />
             <label className={styles.label} htmlFor="date-of-birth">
               Date of Birth
@@ -333,8 +90,8 @@ export default function Home() {
             <DatePicker
               className={styles.dateInput}
               id="date-of-birth"
-              selected={state.employee.dateOfBirth}
-              onChange={(date) => handleDateChange('dateOfBirth', date)}
+              selected={employee.dateOfBirth}
+              onChange={(event) => handleInputChange('dateOfBirth', event.target.value)}
             />
             <label className={styles.label} htmlFor="start-date">
               Start Date
@@ -342,8 +99,8 @@ export default function Home() {
             <DatePicker
               className={styles.dateInput}
               id="start-date"
-              selected={state.employee.startDate}
-              onChange={(date) => handleDateChange('startDate', date)}
+              selected={employee.startDate}
+              onChange={(event) => handleInputChange('startDate', event.target.value)}
             />
             <fieldset className={styles.address}>
               <legend>Address</legend>
@@ -353,12 +110,7 @@ export default function Home() {
               <input
                 id="street"
                 type="text"
-                onChange={(event) =>
-                  setState({
-                    ...state,
-                    employee: { ...state.employee, street: event.target.value },
-                  })
-                }
+                onChange={(event) => handleInputChange('street', event.target.value)}
               />
               <label className={styles.label} htmlFor="city">
                 City
@@ -366,12 +118,7 @@ export default function Home() {
               <input
                 id="city"
                 type="text"
-                onChange={(event) =>
-                  setState({
-                    ...state,
-                    employee: { ...state.employee, city: event.target.value },
-                  })
-                }
+                onChange={(event) => handleInputChange('city', event.target.value)}
               />
               <label className={styles.label} htmlFor="states">
                 State
@@ -380,8 +127,8 @@ export default function Home() {
                 <Select
                   name="states"
                   inputId="states"
-                  options={states.map((s) => ({ value: s.abbreviation, label: s.name }))}
-                  onChange={(option) => handleSelectChange('states', option)}
+                  options={stateOptions}
+                  onChange={(option) => handleInputChange('states', option.value)}
                 />
               </ClientOnly>
               <label className={styles.label} htmlFor="zip-code">
@@ -390,12 +137,7 @@ export default function Home() {
               <input
                 id="zip-code"
                 type="number"
-                onChange={(event) =>
-                  setState({
-                    ...state,
-                    employee: { ...state.employee, zipCode: event.target.value },
-                  })
-                }
+                onChange={(option) => handleInputChange('zipCode', option)}
               />
             </fieldset>
             <label className={styles.label} htmlFor="department">
@@ -405,14 +147,8 @@ export default function Home() {
               <Select
                 name="department"
                 inputId="department"
-                options={[
-                  { value: 'Sales', label: 'Sales' },
-                  { value: 'Marketing', label: 'Marketing' },
-                  { value: 'Engineering', label: 'Engineering' },
-                  { value: 'Human Resources', label: 'Human Resources' },
-                  { value: 'Legal', label: 'Legal' },
-                ]}
-                onChange={(option) => handleSelectChange('department', option)}
+                options={departmentOptions}
+                onChange={(option) => handleSelectChange('department', option.value)}
               />
             </ClientOnly>
           </form>
@@ -420,25 +156,17 @@ export default function Home() {
             Save
           </button>
         </div>
-        {state.modal && (
+        {modal && (
           <div className={styles.bg}>
             <div className={styles.modal} id="confirmation">
               <p> Employee Created!</p>
-              <button
-                className={styles.cross}
-                onClick={() =>
-                  setState({
-                    ...state,
-                    modal: false,
-                  })
-                }
-              >
+              <button className={styles.cross} onClick={() => setModal(false)}>
                 X
               </button>
             </div>
           </div>
         )}
       </main>
-    </>
+    </React.Fragment>
   );
 }
