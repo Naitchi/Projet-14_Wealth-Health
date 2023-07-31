@@ -91,7 +91,7 @@ export default function Home() {
               className={styles.dateInput}
               id="date-of-birth"
               selected={employee.dateOfBirth}
-              onChange={(event) => handleInputChange('dateOfBirth', event.target.value)}
+              onChange={(option) => handleInputChange('dateOfBirth', option)}
             />
             <label className={styles.label} htmlFor="start-date">
               Start Date
@@ -100,7 +100,7 @@ export default function Home() {
               className={styles.dateInput}
               id="start-date"
               selected={employee.startDate}
-              onChange={(event) => handleInputChange('startDate', event.target.value)}
+              onChange={(option) => handleInputChange('startDate', option)}
             />
             <fieldset className={styles.address}>
               <legend>Address</legend>
@@ -137,7 +137,7 @@ export default function Home() {
               <input
                 id="zip-code"
                 type="number"
-                onChange={(option) => handleInputChange('zipCode', option)}
+                onChange={(event) => handleInputChange('zipCode', event.target.value)}
               />
             </fieldset>
             <label className={styles.label} htmlFor="department">
@@ -148,7 +148,7 @@ export default function Home() {
                 name="department"
                 inputId="department"
                 options={departmentOptions}
-                onChange={(option) => handleSelectChange('department', option.value)}
+                onChange={(option) => handleInputChange('department', option.value)}
               />
             </ClientOnly>
           </form>
