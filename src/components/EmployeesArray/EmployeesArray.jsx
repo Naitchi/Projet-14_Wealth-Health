@@ -187,8 +187,10 @@ export default function EmployeesArray() {
               x
             </button>
           )}
-          <p>Seach:</p>
+          <label htmlFor="search">Seach:</label>
           <input
+            id="search"
+            name="search"
             className={styles.search}
             type="text"
             value={state.params.search} // Lie la valeur de l'input au state
