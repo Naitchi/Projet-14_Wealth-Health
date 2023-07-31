@@ -68,31 +68,6 @@ export default function EmployeesArray() {
     else return sortedEmployees.length;
   };
 
-  const showPagesNumber = () => {
-    const { show, page } = params;
-    const pagesNumber = employees.length / show;
-    const buttons = [];
-    for (let i = 0; i < pagesNumber; i++) {
-      i === page
-        ? buttons.push(
-            <button
-              className={styles.pageActive}
-              disabled
-              key={i}
-              onClick={() => handlePageClick(i)}
-            >
-              {i + 1}
-            </button>,
-          )
-        : buttons.push(
-            <button className={styles.page} key={i} onClick={() => handlePageClick(i)}>
-              {i + 1}
-            </button>,
-          );
-    }
-    return buttons;
-  };
-
   const handlePageClick = (i) => {
     setParams({ ...params, page: i });
   };
@@ -119,21 +94,6 @@ export default function EmployeesArray() {
     );
   };
 
-  const showNext = () => {
-    const { page, show } = params;
-    const pagesNumber = employees.length / show;
-
-    return page + 1 > pagesNumber ? (
-      <button className={styles.page} disabled onClick={handleNextPage}>
-        Next
-      </button>
-    ) : (
-      <button className={styles.page} onClick={handleNextPage}>
-        Next
-      </button>
-    );
-  };
-
   useEffect(() => {
     const storage = JSON.parse(localStorage.getItem('employees'));
     setEmployees(storage);
@@ -151,6 +111,52 @@ export default function EmployeesArray() {
     };
   }, [employees, params]);
 
+  const showPagesNumber = () => {
+    const { show, page } = params;
+    const pagesNumber = sortedEmployees.length / show;
+    const buttons = [];
+    for (let i = 0; i < pagesNumber; i++) {
+      i === page
+        ? buttons.push(
+            <button
+              className={styles.pageActive}
+              disabled
+              key={i}
+              onClick={() => handlePageClick(i)}
+            >
+              {i + 1}
+            </button>,
+          )
+        : buttons.push(
+            <button className={styles.page} key={i} onClick={() => handlePageClick(i)}>
+              {i + 1}
+            </button>,
+          );
+    }
+    return buttons;
+  };
+
+  const paginationButtons = useMemo(() => {
+    console.log('paginationMemo');
+    console.log(showPagesNumber());
+    return showPagesNumber();
+  }, [params.show, sortedEmployees.length]);
+
+  const showNext = () => {
+    const { page, show } = params;
+    const pagesNumber = sortedEmployees.length / show;
+
+    return page + 1 > pagesNumber ? (
+      <button className={styles.page} disabled onClick={handleNextPage}>
+        Next
+      </button>
+    ) : (
+      <button className={styles.page} onClick={handleNextPage}>
+        Next
+      </button>
+    );
+  };
+
   return (
     <div className={styles.component}>
       <div className={styles.top}>
@@ -159,7 +165,7 @@ export default function EmployeesArray() {
           <select
             className={styles.show}
             onChange={(event) => {
-              setParams({ ...params, show: event.target.value, page: 0 });
+              setParams({ ...params, show: parseInt(event.target.value), page: 0 });
             }}
           >
             <option>10</option>
@@ -328,7 +334,7 @@ export default function EmployeesArray() {
         </p>
         <div>
           {showPrevious()}
-          {showPagesNumber()}
+          {paginationButtons}
           {showNext()}
         </div>
       </div>
