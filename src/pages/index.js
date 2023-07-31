@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import ClientOnly from '../components/ClientOnly/ClientOnly';
+import Modal from '@/components/Modal/Modal';
 
 import styles from '../styles/Home.module.css';
 import states from '../data/states';
@@ -157,14 +158,12 @@ export default function Home() {
           </button>
         </div>
         {modal && (
-          <div className={styles.bg}>
-            <div className={styles.modal} id="confirmation">
-              <p> Employee Created!</p>
-              <button className={styles.cross} onClick={() => setModal(false)}>
-                X
-              </button>
-            </div>
-          </div>
+          <Modal
+            content={<p>Employee Created!</p>}
+            onClose={() => {
+              setModal(false);
+            }}
+          />
         )}
       </main>
     </React.Fragment>
