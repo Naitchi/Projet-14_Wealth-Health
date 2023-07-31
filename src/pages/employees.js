@@ -1,11 +1,23 @@
+/**
+ * Module dependencies.
+ */
 import Head from 'next/head';
 import React from 'react';
 import Link from 'next/link';
 
+// Custom Components
 import EmployeesArray from '@/components/EmployeesArray/EmployeesArray';
 
+// Styles
 import styles from '../styles/Employees.module.css';
 
+/**
+ * Employees component - Represents the page showing the list of current employees.
+ *
+ * @component
+ * 
+ * @returns {React.Component} The Employees component.
+ */
 export default function Employees() {
   return (
     <React.Fragment>

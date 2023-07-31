@@ -1,7 +1,21 @@
+/**
+ * Module dependencies.
+ */
 import React, { useEffect, useState, useMemo } from 'react';
+
+// Styles
 import styles from './EmployeesArray.module.css';
 
+/**
+ * Component to display an array of employees in a table with
+ * pagination, sorting and searching capabilities.
+ *
+ * @returns {ReactElement} Rendered component
+ */
 export default function EmployeesArray() {
+  /**
+   * Columns to be displayed in the table.
+   */
   const columns = useMemo(
     () => [
       'firstName',
@@ -16,7 +30,15 @@ export default function EmployeesArray() {
     ],
     [],
   );
+
+  /**
+   * Array of unsorted employees.
+   */
   const [employees, setEmployees] = useState([]);
+
+  /**
+   * Parameters for display control.
+   */
   const [params, setParams] = useState({
     show: 10, //number between 10 25 50 100
     sortBy: 'firstName', // nom du champ qui va trié le tableau
@@ -25,6 +47,12 @@ export default function EmployeesArray() {
     page: 0, // chiffre de la page visualisé
   });
 
+  /**
+   * Filters employees based on a search text.
+   *
+   * @param {Array} employees - Array of employees to be filtered
+   * @returns {Array} Filtered employees array
+   */
   const sortByText = (employees) => {
     const text = params.search;
     if (text.length === 0) return employees;
@@ -48,6 +76,14 @@ export default function EmployeesArray() {
     return result;
   };
 
+  /**
+   * Sorts the employees based on a field and order.
+   *
+   * @param {Array} data - Array of employees to be sorted
+   * @param {string} sortBy - Field name to sort by
+   * @param {boolean} order - Sort order (true for ascending, false for descending)
+   * @returns {Array} Sorted employees array
+   */
   const sortEmployees = (data, sortBy, order) => {
     return [...data].sort((a, b) => {
       let valueA = a[sortBy];
@@ -57,30 +93,53 @@ export default function EmployeesArray() {
     });
   };
 
+  /**
+   * Change the sorting criteria for the table.
+   *
+   * @param {string} name - Name of the column.
+   */
   const changeSort = (name) => {
     if (params.sortBy === name) setParams({ ...params, order: !params.order });
     if (params.sortBy !== name) setParams({ ...params, sortBy: name, order: true });
   };
 
+  /**
+   * Calculates the maximum number of elements to display based on the current page.
+   * @returns {number} - The maximum number of elements to display.
+   */
   const showMaxElements = () => {
     if (params.show * (params.page + 1) < sortedEmployees.length)
       return params.show * (params.page + 1);
     else return sortedEmployees.length;
   };
 
+  /**
+   * Handles the event when a pagination button is clicked.
+   * @param {number} i - The page number to switch to.
+   */
   const handlePageClick = (i) => {
     setParams({ ...params, page: i });
   };
 
+  /**
+   * Switches to the previous page.
+   */
   const handlePreviousPage = () => {
     if (params.page - 1 >= 0) setParams({ ...params, page: params.page - 1 });
   };
 
+  /**
+   * Switches to the next page.
+   */
   const handleNextPage = () => {
     const pagesMax = employees.length / params.show;
     if (params.page + 1 <= pagesMax) setParams({ ...params, page: params.page + 1 });
   };
 
+  /**
+   * Renders the "Previous" button for pagination.
+   * @returns {React.Element} - The "Previous" button element.
+   */
   const showPrevious = () => {
     const { page } = params;
     return page - 1 < 0 ? (
@@ -94,11 +153,13 @@ export default function EmployeesArray() {
     );
   };
 
+  // Fetches the employees data from local storage
   useEffect(() => {
     const storage = JSON.parse(localStorage.getItem('employees'));
     setEmployees(storage);
   }, []);
 
+  // Calculate sorted employees and paginated employees data
   const { sortedEmployees, sortedEmployeesOfThisPage } = useMemo(() => {
     let data = sortByText(employees);
     data = sortEmployees(data, params.sortBy, params.order);
@@ -111,6 +172,10 @@ export default function EmployeesArray() {
     };
   }, [employees, params]);
 
+  /**
+   * Renders the pagination buttons based on the number of pages.
+   * @returns {Array} - An array of button elements for pagination.
+   */
   const showPagesNumber = () => {
     const { show, page } = params;
     const pagesNumber = sortedEmployees.length / show;
@@ -136,12 +201,17 @@ export default function EmployeesArray() {
     return buttons;
   };
 
+  // Memoized calculation of pagination buttons
   const paginationButtons = useMemo(() => {
     console.log('paginationMemo');
     console.log(showPagesNumber());
     return showPagesNumber();
   }, [params.show, sortedEmployees.length]);
 
+  /**
+   * Renders the "Next" button for pagination.
+   * @returns {React.Element} - The "Next" button element.
+   */
   const showNext = () => {
     const { page, show } = params;
     const pagesNumber = sortedEmployees.length / show;

@@ -1,34 +1,58 @@
+/**
+ * Module dependencies.
+ */
 import Head from 'next/head';
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 
+// UI Components
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
+
+// Custom Components
 import ClientOnly from '../components/ClientOnly/ClientOnly';
 import Modal from '@/components/Modal/Modal';
 
+// Styles
 import styles from '../styles/Home.module.css';
+
+// Data
 import states from '../data/states';
 
+/**
+ * Home component - Represents the main Home page for creating employees.
+ *
+ * @returns {React.Component} The Home component
+ */
 export default function Home() {
+  /**
+   * Employee state - Represents an individual employee's data.
+   * Modal state - Represents the visibility of the modal component.
+   */
   const [employee, setEmployee] = useState({
     firstName: '',
     lastName: '',
     dateOfBirth: '',
     startDate: '',
-    department: 'Sales', // c'est un select il faut une valeur par default
+    department: 'Sales', // Default value for the Select
     street: '',
     city: '',
-    states: 'AL', // c'est un select il faut une valeur par default
+    states: 'AL', // Default value for the Select
     zipCode: '',
   });
   const [modal, setModal] = useState(false);
 
+  /**
+   * Generates the state options for the dropdown select.
+   */
   const stateOptions = useMemo(
     () => states.map((s) => ({ value: s.abbreviation, label: s.name })),
     [],
   );
 
+  /**
+   * Generates the department options for the dropdown select.
+   */
   const departmentOptions = useMemo(
     () => [
       { value: 'Sales', label: 'Sales' },
@@ -40,6 +64,9 @@ export default function Home() {
     [],
   );
 
+  /**
+   * Saves the employee data to local storage and shows a confirmation modal.
+   */
   const save = () => {
     if (typeof window !== 'undefined') {
       const employees = JSON.parse(localStorage.getItem('employees')) || [];
@@ -49,6 +76,12 @@ export default function Home() {
     }
   };
 
+  /**
+   * Handle input change for the employee form.
+   *
+   * @param {string} field - The field name of the employee object.
+   * @param {*} value - The value to be set for the specified field.
+   */
   const handleInputChange = (field, value) => {
     setEmployee((prev) => ({ ...prev, [field]: value }));
   };
