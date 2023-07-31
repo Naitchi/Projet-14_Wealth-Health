@@ -2,8 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import styles from './EmployeesArray.module.css';
 
 export default function EmployeesArray() {
-  const [state, setState] = useState({
-    columns: [
+  const columns = useMemo(
+    () => [
       'firstName',
       'lastName',
       'startDate',
@@ -14,18 +14,19 @@ export default function EmployeesArray() {
       'states',
       'zipCode',
     ],
-    employees: [],
-    params: {
-      show: 10, //number between 10 25 50 100
-      sortBy: 'firstName', // nom du champ qui va trié le tableau
-      order: true, // ordre de trie (true = croissant, false = décroissant)
-      search: '', // input user from SearchBar
-      page: 0, // chiffre de la page visualisé
-    },
+    [],
+  );
+  const [employees, setEmployees] = useState([]);
+  const [params, setParams] = useState({
+    show: 10, //number between 10 25 50 100
+    sortBy: 'firstName', // nom du champ qui va trié le tableau
+    order: true, // ordre de trie (true = croissant, false = décroissant)
+    search: '', // input user from SearchBar
+    page: 0, // chiffre de la page visualisé
   });
 
   const sortByText = (employees) => {
-    const text = state.params.search;
+    const text = params.search;
     if (text.length === 0) return employees;
     const result = employees
       .map((employee) => {
@@ -57,21 +58,19 @@ export default function EmployeesArray() {
   };
 
   const changeSort = (name) => {
-    if (state.params.sortBy === name)
-      setState({ ...state, params: { ...state.params, order: !state.params.order } });
-    if (state.params.sortBy !== name)
-      setState({ ...state, params: { ...state.params, sortBy: name, order: true } });
+    if (params.sortBy === name) setParams({ ...params, order: !params.order });
+    if (params.sortBy !== name) setParams({ ...params, sortBy: name, order: true });
   };
 
   const showMaxElements = () => {
-    if (state.params.show * (state.params.page + 1) < sortedEmployees.length)
-      return state.params.show * (state.params.page + 1);
+    if (params.show * (params.page + 1) < sortedEmployees.length)
+      return params.show * (params.page + 1);
     else return sortedEmployees.length;
   };
 
   const showPagesNumber = () => {
-    const { show, page } = state.params;
-    const pagesNumber = state.employees.length / show;
+    const { show, page } = params;
+    const pagesNumber = employees.length / show;
     const buttons = [];
     for (let i = 0; i < pagesNumber; i++) {
       i === page
@@ -95,22 +94,20 @@ export default function EmployeesArray() {
   };
 
   const handlePageClick = (i) => {
-    setState({ ...state, params: { ...state.params, page: i } });
+    setParams({ ...params, page: i });
   };
 
   const handlePreviousPage = () => {
-    if (state.params.page - 1 >= 0)
-      setState({ ...state, params: { ...state.params, page: state.params.page - 1 } });
+    if (params.page - 1 >= 0) setParams({ ...params, page: params.page - 1 });
   };
 
   const handleNextPage = () => {
-    const pagesMax = state.employees.length / state.params.show;
-    if (state.params.page + 1 <= pagesMax)
-      setState({ ...state, params: { ...state.params, page: state.params.page + 1 } });
+    const pagesMax = employees.length / params.show;
+    if (params.page + 1 <= pagesMax) setParams({ ...params, page: params.page + 1 });
   };
 
   const showPrevious = () => {
-    const { page } = state.params;
+    const { page } = params;
     return page - 1 < 0 ? (
       <button className={styles.page} disabled onClick={handlePreviousPage}>
         Previous
@@ -123,8 +120,8 @@ export default function EmployeesArray() {
   };
 
   const showNext = () => {
-    const { page, show } = state.params;
-    const pagesNumber = state.employees.length / show;
+    const { page, show } = params;
+    const pagesNumber = employees.length / show;
 
     return page + 1 > pagesNumber ? (
       <button className={styles.page} disabled onClick={handleNextPage}>
@@ -139,21 +136,20 @@ export default function EmployeesArray() {
 
   useEffect(() => {
     const storage = JSON.parse(localStorage.getItem('employees'));
-    setState({ ...state, employees: storage });
+    setEmployees(storage);
   }, []);
 
   const { sortedEmployees, sortedEmployeesOfThisPage } = useMemo(() => {
-    const { employees, params } = state;
     let data = sortByText(employees);
     data = sortEmployees(data, params.sortBy, params.order);
     return {
       sortedEmployeesOfThisPage: data.slice(
-        state.params.show * state.params.page,
-        state.params.show * state.params.page + state.params.show,
+        params.show * params.page,
+        params.show * params.page + params.show,
       ),
       sortedEmployees: data,
     };
-  }, [state]);
+  }, [employees, params]);
 
   return (
     <div className={styles.component}>
@@ -163,10 +159,7 @@ export default function EmployeesArray() {
           <select
             className={styles.show}
             onChange={(event) => {
-              setState({
-                ...state,
-                params: { ...state.params, show: event.target.value, page: 0 },
-              });
+              setParams({ ...params, show: event.target.value, page: 0 });
             }}
           >
             <option>10</option>
@@ -177,11 +170,11 @@ export default function EmployeesArray() {
           <p>entries</p>
         </div>
         <div className={styles.row}>
-          {state.params.search.length !== 0 && (
+          {params.search.length !== 0 && (
             <button
               className={styles.cross}
               onClick={() => {
-                setState({ ...state, params: { ...state.params, search: '' } });
+                setParams({ ...params, search: '' });
               }}
             >
               x
@@ -193,9 +186,9 @@ export default function EmployeesArray() {
             name="search"
             className={styles.search}
             type="text"
-            value={state.params.search} // Lie la valeur de l'input au state
+            value={params.search} // Lie la valeur de l'input au state
             onChange={(event) => {
-              setState({ ...state, params: { ...state.params, search: event.target.value } });
+              setParams({ ...params, search: event.target.value });
             }}
           />
         </div>
@@ -207,96 +200,96 @@ export default function EmployeesArray() {
               First Name
               <p
                 className={`${styles.arrow} 
-                 ${state.params.sortBy === 'firstName' ? styles.active : ''}`}
+                 ${params.sortBy === 'firstName' ? styles.active : ''}`}
               >
-                {state.params.sortBy !== 'firstName' && '⇅'}
-                {state.params.sortBy === 'firstName' && state.params.order === true && '↑'}
-                {state.params.sortBy === 'firstName' && state.params.order === false && '↓'}
+                {params.sortBy !== 'firstName' && '⇅'}
+                {params.sortBy === 'firstName' && params.order === true && '↑'}
+                {params.sortBy === 'firstName' && params.order === false && '↓'}
               </p>
             </th>
             <th className={`${styles.th}`} onClick={() => changeSort('lastName')}>
               Last Name
               <p
                 className={`${styles.arrow} 
-                 ${state.params.sortBy === 'lastName' ? styles.active : ''}`}
+                 ${params.sortBy === 'lastName' ? styles.active : ''}`}
               >
-                {state.params.sortBy !== 'lastName' && '⇅'}
-                {state.params.sortBy === 'lastName' && state.params.order === true && '↑'}
-                {state.params.sortBy === 'lastName' && state.params.order === false && '↓'}
+                {params.sortBy !== 'lastName' && '⇅'}
+                {params.sortBy === 'lastName' && params.order === true && '↑'}
+                {params.sortBy === 'lastName' && params.order === false && '↓'}
               </p>
             </th>
             <th className={`${styles.th}`} onClick={() => changeSort('startDate')}>
               Start Date
               <p className={`${styles.arrow} `}>
-                {state.params.sortBy !== 'startDate' && '⇅'}
-                {state.params.sortBy === 'startDate' && state.params.order === true && '↑'}
-                {state.params.sortBy === 'startDate' && state.params.order === false && '↓'}
+                {params.sortBy !== 'startDate' && '⇅'}
+                {params.sortBy === 'startDate' && params.order === true && '↑'}
+                {params.sortBy === 'startDate' && params.order === false && '↓'}
               </p>
             </th>
             <th className={`${styles.th}`} onClick={() => changeSort('department')}>
               Departement
               <p
                 className={`${styles.arrow} 
-                 ${state.params.sortBy === 'department' ? styles.active : ''}`}
+                 ${params.sortBy === 'department' ? styles.active : ''}`}
               >
-                {state.params.sortBy !== 'department' && '⇅'}
-                {state.params.sortBy === 'department' && state.params.order === true && '↑'}
-                {state.params.sortBy === 'department' && state.params.order === false && '↓'}
+                {params.sortBy !== 'department' && '⇅'}
+                {params.sortBy === 'department' && params.order === true && '↑'}
+                {params.sortBy === 'department' && params.order === false && '↓'}
               </p>
             </th>
             <th className={`${styles.th}`} onClick={() => changeSort('dateOfBirth')}>
               Date of Birth
               <p
                 className={`${styles.arrow} 
-                 ${state.params.sortBy === 'dateOfBirth' ? styles.active : ''}`}
+                 ${params.sortBy === 'dateOfBirth' ? styles.active : ''}`}
               >
-                {state.params.sortBy !== 'dateOfBirth' && '⇅'}
-                {state.params.sortBy === 'dateOfBirth' && state.params.order === true && '↑'}
-                {state.params.sortBy === 'dateOfBirth' && state.params.order === false && '↓'}
+                {params.sortBy !== 'dateOfBirth' && '⇅'}
+                {params.sortBy === 'dateOfBirth' && params.order === true && '↑'}
+                {params.sortBy === 'dateOfBirth' && params.order === false && '↓'}
               </p>
             </th>
             <th className={`${styles.th}`} onClick={() => changeSort('street')}>
               Street
               <p
                 className={`${styles.arrow} 
-                 ${state.params.sortBy === 'street' ? styles.active : ''}`}
+                 ${params.sortBy === 'street' ? styles.active : ''}`}
               >
-                {state.params.sortBy !== 'street' && '⇅'}
-                {state.params.sortBy === 'street' && state.params.order === true && '↑'}
-                {state.params.sortBy === 'street' && state.params.order === false && '↓'}
+                {params.sortBy !== 'street' && '⇅'}
+                {params.sortBy === 'street' && params.order === true && '↑'}
+                {params.sortBy === 'street' && params.order === false && '↓'}
               </p>
             </th>
             <th className={`${styles.th}`} onClick={() => changeSort('city')}>
               City
               <p
                 className={`${styles.arrow} 
-                 ${state.params.sortBy === 'city' ? styles.active : ''}`}
+                 ${params.sortBy === 'city' ? styles.active : ''}`}
               >
-                {state.params.sortBy !== 'city' && '⇅'}
-                {state.params.sortBy === 'city' && state.params.order === true && '↑'}
-                {state.params.sortBy === 'city' && state.params.order === false && '↓'}
+                {params.sortBy !== 'city' && '⇅'}
+                {params.sortBy === 'city' && params.order === true && '↑'}
+                {params.sortBy === 'city' && params.order === false && '↓'}
               </p>
             </th>
             <th className={`${styles.th}`} onClick={() => changeSort('states')}>
               State
               <p
                 className={`${styles.arrow} 
-                ${state.params.sortBy === 'states' ? styles.active : ''}`}
+                ${params.sortBy === 'states' ? styles.active : ''}`}
               >
-                {state.params.sortBy !== 'states' && '⇅'}
-                {state.params.sortBy === 'states' && state.params.order === true && '↑'}
-                {state.params.sortBy === 'states' && state.params.order === false && '↓'}
+                {params.sortBy !== 'states' && '⇅'}
+                {params.sortBy === 'states' && params.order === true && '↑'}
+                {params.sortBy === 'states' && params.order === false && '↓'}
               </p>
             </th>
             <th className={`${styles.th}`} onClick={() => changeSort('zipCode')}>
               Zip Code
               <p
                 className={`${styles.arrow} 
-                 ${state.params.sortBy === 'zipCode' ? styles.active : ''}`}
+                 ${params.sortBy === 'zipCode' ? styles.active : ''}`}
               >
-                {state.params.sortBy !== 'zipCode' && '⇅'}
-                {state.params.sortBy === 'zipCode' && state.params.order === true && '↑'}
-                {state.params.sortBy === 'zipCode' && state.params.order === false && '↓'}
+                {params.sortBy !== 'zipCode' && '⇅'}
+                {params.sortBy === 'zipCode' && params.order === true && '↑'}
+                {params.sortBy === 'zipCode' && params.order === false && '↓'}
               </p>
             </th>
           </tr>
@@ -309,11 +302,8 @@ export default function EmployeesArray() {
           ) : (
             sortedEmployeesOfThisPage.map((employee, key) => (
               <tr key={key} className={`${key % 2 === 0 ? styles.greyRow : ''}`}>
-                {state.columns.map((column) => (
-                  <td
-                    key={column}
-                    className={state.params.sortBy === column ? styles.activeColumn : ''}
-                  >
+                {columns.map((column) => (
+                  <td key={column} className={params.sortBy === column ? styles.activeColumn : ''}>
                     {employee[column]}
                   </td>
                 ))}
@@ -326,14 +316,14 @@ export default function EmployeesArray() {
         <p>
           Showing
           {sortedEmployees.length !== 0
-            ? ' ' + (state.params.show * state.params.page + 1) + ' '
+            ? ' ' + (params.show * params.page + 1) + ' '
             : ' ' + 0 + ' '}
           to
           {' ' + showMaxElements() + ' '}
           of
           {' ' + sortedEmployees.length + ' '}
-          {state.params.search && sortedEmployees.length !== state.employees.length
-            ? `(filtered from ${state.employees.length} total entries)`
+          {params.search && sortedEmployees.length !== employees.length
+            ? `(filtered from ${employees.length} total entries)`
             : 'entries'}
         </p>
         <div>
