@@ -11,10 +11,11 @@ import DatePicker from 'react-datepicker';
 
 // Custom Components
 import ClientOnly from '../components/ClientOnly/ClientOnly';
-import Modal from '@/components/Modal/Modal';
+import Modal from 'ma-librairie-react';
 
 // Styles
 import styles from '../styles/Home.module.css';
+import 'ma-librairie-react/dist/styles.css';
 
 // Data
 import states from '../data/states';

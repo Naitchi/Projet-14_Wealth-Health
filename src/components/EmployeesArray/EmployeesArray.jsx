@@ -1,7 +1,9 @@
 /**
  * Module dependencies.
  */
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { getEmployees } from '@/redux/employeesSlice';
 
 // Styles
 import styles from './EmployeesArray.module.css';
@@ -32,9 +34,9 @@ export default function EmployeesArray() {
   );
 
   /**
-   * Array of unsorted employees.
+   * Array of unsorted employees from store.
    */
-  const [employees, setEmployees] = useState([]);
+  const employees = useSelector(getEmployees);
 
   /**
    * Parameters for display control.
@@ -153,22 +155,22 @@ export default function EmployeesArray() {
     );
   };
 
-  // Fetches the employees data from local storage
-  useEffect(() => {
-    const storage = JSON.parse(localStorage.getItem('employees'));
-    setEmployees(storage);
-  }, []);
-
   // Calculate sorted employees and paginated employees data
   const { sortedEmployees, sortedEmployeesOfThisPage } = useMemo(() => {
     let data = sortByText(employees);
-    data = sortEmployees(data, params.sortBy, params.order);
+    if (data?.length) {
+      data = sortEmployees(data, params.sortBy, params.order);
+      return {
+        sortedEmployeesOfThisPage: data.slice(
+          params.show * params.page,
+          params.show * params.page + params.show,
+        ),
+        sortedEmployees: data,
+      };
+    }
     return {
-      sortedEmployeesOfThisPage: data.slice(
-        params.show * params.page,
-        params.show * params.page + params.show,
-      ),
-      sortedEmployees: data,
+      sortedEmployeesOfThisPage: [],
+      sortedEmployees: [],
     };
   }, [employees, params]);
 
@@ -203,8 +205,6 @@ export default function EmployeesArray() {
 
   // Memoized calculation of pagination buttons
   const paginationButtons = useMemo(() => {
-    console.log('paginationMemo');
-    console.log(showPagesNumber());
     return showPagesNumber();
   }, [params.show, sortedEmployees.length]);
 

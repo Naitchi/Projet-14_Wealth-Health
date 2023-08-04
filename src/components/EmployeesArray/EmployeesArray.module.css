@@ -27,7 +27,7 @@
 
 .cross {
     position: relative;
-    left: 227px;
+    transform: translateX(227px);
 
 
     color: blue;
@@ -52,6 +52,7 @@
 }
 
 .table {
+    min-height: 500px;
     border-bottom: solid 1px black;
     margin-bottom: 3px;
     border-collapse: collapse;

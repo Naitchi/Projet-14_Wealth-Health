@@ -2,8 +2,10 @@
  * Module dependencies.
  */
 import Head from 'next/head';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { setEmployees } from '@/redux/employeesSlice';
 
 // Custom Components
 import EmployeesArray from '@/components/EmployeesArray/EmployeesArray';
@@ -15,10 +17,18 @@ import styles from '../styles/Employees.module.css';
  * Employees component - Represents the page showing the list of current employees.
  *
  * @component
- * 
+ *
  * @returns {React.Component} The Employees component.
  */
 export default function Employees() {
+  const dispatch = useDispatch();
+
+  // Fetches the employees data from local storage
+  useEffect(() => {
+    const storage = JSON.parse(localStorage.getItem('employees'));
+    dispatch(setEmployees({ content: storage }));
+  }, []);
+
   return (
     <React.Fragment>
       <Head>
