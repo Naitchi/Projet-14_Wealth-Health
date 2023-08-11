@@ -4,6 +4,8 @@
 import Head from 'next/head';
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { addEmployee } from '../redux/employeesSlice';
 
 // UI Components
 import Select from 'react-select';
@@ -26,6 +28,7 @@ import states from '../data/states';
  * @returns {React.Component} The Home component
  */
 export default function Home() {
+  const dispatch = useDispatch();
   /**
    * Employee state - Represents an individual employee's data.
    * Modal state - Represents the visibility of the modal component.
@@ -73,6 +76,7 @@ export default function Home() {
       const employees = JSON.parse(localStorage.getItem('employees')) || [];
       employees.push(employee);
       localStorage.setItem('employees', JSON.stringify(employees));
+      dispatch(addEmployee(employee));
       setModal(true);
     }
   };
