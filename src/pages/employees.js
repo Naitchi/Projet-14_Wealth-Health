@@ -26,7 +26,7 @@ export default function Employees() {
   // Fetches the employees data from local storage
   useEffect(() => {
     const storage = JSON.parse(localStorage.getItem('employees'));
-    dispatch(setEmployees({ content: storage }));
+    if (storage !== undefined) dispatch(setEmployees({ content: storage }));
   }, []);
 
   return (
