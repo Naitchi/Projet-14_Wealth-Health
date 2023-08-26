@@ -380,7 +380,9 @@ export default function EmployeesArray() {
               <tr key={key} className={`${key % 2 === 0 ? styles.greyRow : ''}`}>
                 {columns.map((column) => (
                   <td key={column} className={params.sortBy === column ? styles.activeColumn : ''}>
-                    {employee[column]}
+                    {employee[column] instanceof Date
+                      ? employee[column].toLocaleDateString()
+                      : employee[column]}
                   </td>
                 ))}
               </tr>
