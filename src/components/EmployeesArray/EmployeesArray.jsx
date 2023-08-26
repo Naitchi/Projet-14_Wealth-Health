@@ -183,7 +183,6 @@ export default function EmployeesArray() {
     const pagesNumber = sortedEmployees.length / show;
     const buttons = [];
     for (let i = 0; i < pagesNumber; i++) {
-      console.log(i, page);
       i === page
         ? buttons.push(
             <button
