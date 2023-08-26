@@ -183,6 +183,7 @@ export default function EmployeesArray() {
     const pagesNumber = sortedEmployees.length / show;
     const buttons = [];
     for (let i = 0; i < pagesNumber; i++) {
+      console.log(i, page);
       i === page
         ? buttons.push(
             <button
@@ -206,7 +207,7 @@ export default function EmployeesArray() {
   // Memoized calculation of pagination buttons
   const paginationButtons = useMemo(() => {
     return showPagesNumber();
-  }, [params.show, sortedEmployees.length]);
+  }, [params.show, sortedEmployees.length, params.page]);
 
   /**
    * Renders the "Next" button for pagination.
