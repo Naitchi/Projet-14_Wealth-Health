@@ -1,10 +1,16 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+This is the project number 14 of my formation "application developer - JavaScript React"
+
+I needed to convert a Jquery Site into React and publish and use a homemade npm package for the modal.
+
 ## Getting Started
 
 First, run the development server:
 
 ```bash
+npm i
+
 npm run dev
 # or
 yarn dev
